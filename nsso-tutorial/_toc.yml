@@ -1,0 +1,6 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: image_SR_with_PyTorch
+
