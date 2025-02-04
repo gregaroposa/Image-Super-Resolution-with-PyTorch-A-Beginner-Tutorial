@@ -60,6 +60,8 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'image_SR_with_PyTorch';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -422,7 +424,7 @@
 <span class="c1"># Download latest version</span>
 <span class="n">path_5_14</span> <span class="o">=</span> <span class="n">kagglehub</span><span class="o">.</span><span class="n">dataset_download</span><span class="p">(</span><span class="s2">&quot;ll01dm/set-5-14-super-resolution-dataset&quot;</span><span class="p">)</span>
 <span class="n">path_t91</span> <span class="o">=</span> <span class="n">kagglehub</span><span class="o">.</span><span class="n">dataset_download</span><span class="p">(</span><span class="s2">&quot;ll01dm/t91-image-dataset&quot;</span><span class="p">)</span>
-<span class="c1">#</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Path to dataset set-5 and set-14 files:&quot;</span><span class="p">,</span> <span class="n">path_5_14</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Path to dataset t91 files:&quot;</span><span class="p">,</span> <span class="n">path_t91</span><span class="p">)</span>
 </pre></div>
@@ -462,8 +464,7 @@
 
 <span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
- 
-<span class="c1"># Set a default canvas for plots</span>
+
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -552,7 +553,7 @@ Average image height:      203.58 +- 69.05
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_img_to_tensor</span><span class="p">(</span><span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_img_to_tensor</span><span class="p">(</span><span class="n">img_path</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Using PIL library, load an image from the specified path and convert it to a PyTorch tensor.</span>
 <span class="sd">    The image is also normalized to the range [0, 1].</span>
@@ -574,7 +575,7 @@ Average image height:      203.58 +- 69.05
     <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
     <span class="k">return</span> <span class="n">img</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">convert_rgb_to_ycbcr</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_rgb_to_ycbcr</span><span class="p">(</span><span class="n">img</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an RGB image to YCbCr color space.</span>
 
@@ -962,7 +963,7 @@ torch.Size([320, 3, 33, 33])
 <ul class="simple">
 <li><p><strong>Operation:</strong> Applies 64 filters (or kernels) of size 9×9 to the input image.</p></li>
 <li><p><strong>Purpose:</strong> The large kernel size helps capture a broad context from the input image by covering a larger receptive field.</p></li>
-<li><p><strong>Parameters:</strong> Each filter has learnable weights and an associated bias. For a 9×9 kernel applied to a single-channel input, each filter contains 9×9 weights plus 1 bias. With 64 such filters, this layer has a total of 5248 parameters.</p></li>
+<li><p><strong>Parameters:</strong> Each filter has learnable weights and an associated bias. For a 9×9 kernel applied to a single-channel input, each filter contains 9×9 weights plus 1 bias. With 64 such filters, this layer has a total of 5248 parameters (<span class="math notranslate nohighlight">\(64\cdot9\cdot9 + 64\)</span>).</p></li>
 <li><p><strong>Output:</strong> Produces 64 feature maps of the same spatial dimensions (33×33) as the input, thanks to the <code class="docutils literal notranslate"><span class="pre">'same'</span></code> padding.</p></li>
 </ul>
 </li>
